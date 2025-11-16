@@ -20,18 +20,18 @@ func (s Small) work() uint64 {
 
 // Big is a fat struct (~768 bytes): 12 * 64B = 768B.
 type Big struct {
-	A [64]byte
-	B [64]byte
-	C [64]byte
-	D [64]byte
-	E [64]byte
-	F [64]byte
-	G [64]byte
-	H [64]byte
-	I [64]byte
-	J [64]byte
-	K [64]byte
-	L [64]byte
+	A [256]byte
+	B [256]byte
+	C [256]byte
+	D [256]byte
+	E [256]byte
+	F [256]byte
+	G [256]byte
+	H [256]byte
+	I [256]byte
+	J [256]byte
+	K [256]byte
+	L [256]byte
 }
 
 // NewBig ...

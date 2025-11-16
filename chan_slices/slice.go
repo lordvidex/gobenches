@@ -8,6 +8,18 @@ type Generator[T any] struct {
 	batch   int
 	factory func(*rand.Rand) T
 	seed    int64
+
+	// buf is very large.. buf preallocates all total items to prevent allocations during bench runs
+	buf []T
+}
+
+// init preallocates buf
+func (g *Generator[T]) init() {
+	g.buf = make([]T, g.total)
+	r := rand.New(rand.NewSource(g.seed))
+	for i := range g.buf {
+		g.buf[i] = g.factory(r)
+	}
 }
 
 // Batches returns a channel of batches of T. The size of each batch is specified by the Generator.batch field.
@@ -15,18 +27,8 @@ func (g *Generator[T]) Batches() <-chan []T {
 	out := make(chan []T, 1)
 	go func() {
 		defer close(out)
-		r := rand.New(rand.NewSource(g.seed))
-		remaining := g.total
-
-		for remaining > 0 {
-			n := min(g.batch, remaining)
-
-			batch := make([]T, n)
-			for i := range batch {
-				batch[i] = g.factory(r)
-			}
-			out <- batch
-			remaining -= n
+		for i := 0; i < g.total; i += g.batch {
+			out <- g.buf[i:min(i+g.batch, g.total)]
 		}
 	}()
 	return out
@@ -38,10 +40,8 @@ func (g *Generator[T]) Stream() <-chan T {
 
 	go func() {
 		defer close(out)
-		for x := range g.Batches() {
-			for _, v := range x {
-				out <- v
-			}
+		for _, x := range g.buf {
+			out <- x
 		}
 	}()
 

@@ -56,6 +56,7 @@ func BenchmarkLargeStruct(b *testing.B) {
 	}
 
 	for _, tt := range tests {
+		tt.gen.init()
 		b.Run(tt.name, func(b *testing.B) {
 			b.ReportAllocs()
 			for b.Loop() {
@@ -120,6 +121,7 @@ func BenchmarkLargeStructPtr(b *testing.B) {
 	}
 
 	for _, tt := range tests {
+		tt.gen.init()
 		b.Run(tt.name, func(b *testing.B) {
 			b.ReportAllocs()
 			for b.Loop() {
@@ -183,6 +185,7 @@ func BenchmarkSmallStruct(b *testing.B) {
 	}
 
 	for _, tt := range tests {
+		tt.gen.init()
 		b.Run(tt.name, func(b *testing.B) {
 			b.ReportAllocs()
 			for b.Loop() {
@@ -247,6 +250,7 @@ func BenchmarkSmallStructPtr(b *testing.B) {
 	}
 
 	for _, tt := range tests {
+		tt.gen.init()
 		b.Run(tt.name, func(b *testing.B) {
 			b.ReportAllocs()
 			for b.Loop() {
